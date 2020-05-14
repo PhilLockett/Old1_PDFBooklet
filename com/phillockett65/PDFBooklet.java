@@ -11,7 +11,12 @@
  * 
  * Currently this code only supports a single sheet bifolium. In other words, a
  * single sheet contains 4 pages, 2 on each side. In this way, when the sheet is
- * folded in half a booklet is formed.
+ * folded in half a booklet is formed. For more information see:
+ *  https://en.wikipedia.org/wiki/Bookbinding#Terms_and_techniques
+ *  https://www.formaxprinting.com/blog/2016/11/
+ *      booklet-layout-how-to-arrange-the-pages-of-a-saddle-stitched-booklet/
+ *  https://www.studentbookbinding.co.uk/blog/
+ *      how-to-set-up-pagination-section-sewn-bindings
  * 
  * The document is processed in groups of 4 pages for each sheet of paper. The
  * 4th page is drawn on the left of one side of the sheet in landscape
@@ -49,8 +54,11 @@ public class PDFBooklet {
     private final static int PPI = 72;          // Points Per Inch
     private final static float WIDTH = 8.5f;    // Paper width in Inches
     private final static float HEIGHT = 11f;    // Paper height in Inches
+    private final static PDRectangle PS = PDRectangle.LETTER;
+    private final static ImageType IT = ImageType.GRAY;
+
     private static int sheetCount = 1;
-    private static boolean flip = true;
+    private static boolean flip = true;         // Required?
 
     /**
      * @param args the command line arguments
@@ -109,8 +117,7 @@ public class PDFBooklet {
         PDFRenderer renderer = new PDFRenderer(doc);
         for (int page = first; page < last; ++page) {
             try {
-                BufferedImage bim = renderer.renderImageWithDPI(page, DPI,
-                        ImageType.GRAY);
+                BufferedImage bim = renderer.renderImageWithDPI(page, DPI, IT);
                 images.add(bim);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
@@ -135,7 +142,7 @@ public class PDFBooklet {
     private static void addImagesToPdf(BufferedImage[] images, PDDocument doc) {
         try {
             // Draw images to front of sheet.
-            PDPage page = new PDPage();
+            PDPage page = new PDPage(PS);
             PDRectangle rectangle = page.getMediaBox();
             float height = rectangle.getHeight();
 
@@ -162,7 +169,7 @@ public class PDFBooklet {
             stream.close();
 
             // Draw images to back of sheet.
-            page = new PDPage();
+            page = new PDPage(PS);
             doc.addPage(page);
 
             stream = new PDPageContentStream(doc, page);
