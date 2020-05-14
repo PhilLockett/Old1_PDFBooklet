@@ -1,7 +1,26 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * PDFBooklet is a simple, crude program to generate a booklet form of a PDF
+ * document. It requires 2 parameter, the source PDF and the name of the new
+ * PDF.
+ * 
+ * Example uages:
+ *  java -jar path-to-PDFBooklet.jar path-to-source.pdf path-to-new.pdf
+ * 
+ * Dependencies:
+ *  PDFbox (pdfbox-app-2.0.19.jar)
+ * 
+ * Currently this code only supports a single sheet bifolium. In other words, a
+ * single sheet contains 4 pages, 2 on each side. In this way, when the sheet is
+ * folded in half a booklet is formed.
+ * 
+ * The document is processed in groups of 4 pages for each sheet of paper. The
+ * 4th page is drawn on the left of one side of the sheet in landscape
+ * orientation and the 1st page on the right. On the reverse side, the 2nd page
+ * is drawn on the left and the 3rd page on the right.
+ * 
+ * The implementation is crude in that the source pages are captured as images
+ * which are rotated, scaled an arranged on the pages. As a result, the
+ * generated document is quite large.
  */
 package com.phillockett65;
 
@@ -20,8 +39,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
-
-
 /**
  *
  * @author Phil
@@ -39,13 +56,14 @@ public class PDFBooklet {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        if (args.length > 1)
+        if (args.length > 1) {
             PdfToImages(args[0], args[1]);
+        }
     }
-
 
     /**
      * Generate a booklet style PDF using a crude images of pages technique.
+     *
      * @param sourcePDF original document.
      * @param outputPDF booklet form of original document.
      */
@@ -54,44 +72,47 @@ public class PDFBooklet {
             final int MAX = inputDoc.getNumberOfPages();
 
             try (PDDocument outputDoc = new PDDocument()) {
-                for (int firstPage = 0; firstPage < MAX; firstPage += 4*sheetCount) {
-                    int lastPage = firstPage + 4*sheetCount;
-                    if (lastPage > MAX)
-                        lastPage = MAX;
+                for (int first = 0; first < MAX; first += 4 * sheetCount) {
+                    int last = first + 4 * sheetCount;
+                    if (last > MAX) {
+                        last = MAX;
+                    }
 
-                    BufferedImage[] imageArray = pdfToImageArray(inputDoc, firstPage, lastPage);
+                    BufferedImage[] imageArray = pdfToImageArray(inputDoc,
+                            first, last);
                     addImagesToPdf(imageArray, outputDoc);
-                    System.out.printf("Pages %d to %d\n", firstPage+1, lastPage);
+                    System.out.printf("Pages %d to %d\n", first + 1, last);
                 }
                 inputDoc.close();
-                
+
                 outputDoc.save(outputPDF);
             }
 
             System.out.println("File created in: " + outputPDF);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
     /**
      * Create an array of images of pages from a PDF document.
+     *
      * @param doc PDF document to read.
-     * @param firstPage first page to grab from inputDoc (pages start from 0).
-     * @param lastPage stop grabbing pages BEFORE reaching the last page.
+     * @param first page to grab from inputDoc (pages start from 0).
+     * @param last stop grabbing pages BEFORE reaching the last page.
      * @return a BufferedImage array containing the page images.
      */
-    private static BufferedImage[] pdfToImageArray(PDDocument doc, int firstPage, int lastPage) {
+    private static BufferedImage[] pdfToImageArray(PDDocument doc,
+            int first, int last) {
         ArrayList<BufferedImage> images = new ArrayList<>();
 
         PDFRenderer renderer = new PDFRenderer(doc);
-        for (int page = firstPage; page < lastPage; ++page) {
+        for (int page = first; page < last; ++page) {
             try {
-                BufferedImage bim = renderer.renderImageWithDPI(page, DPI, ImageType.GRAY);
+                BufferedImage bim = renderer.renderImageWithDPI(page, DPI,
+                        ImageType.GRAY);
                 images.add(bim);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -104,9 +125,10 @@ public class PDFBooklet {
     }
 
     /**
-     * Add images to a PDF document, currently only supports up to 4 images. 
+     * Add images to a PDF document, currently only supports up to 4 images.
      * Images 4 and 1 are drawn to the front of the sheet and images 2 and 3 are
      * drawn to the back of the sheet.
+     *
      * @param images to be added to document in booklet arrangement.
      * @param doc to add images to.
      */
@@ -118,7 +140,7 @@ public class PDFBooklet {
             float height = rectangle.getHeight();
 
             doc.addPage(page);
-            final float scale = (float)PPI * HEIGHT / (DPI * WIDTH * 2);
+            final float scale = (float) PPI * HEIGHT / (DPI * WIDTH * 2);
 
             PDPageContentStream stream = new PDPageContentStream(doc, page);
             PDImageXObject image;
@@ -127,12 +149,14 @@ public class PDFBooklet {
             if (images.length > 0) {
                 bimage = rotateBack(images[0]);
                 image = LosslessFactory.createFromImage(doc, bimage);
-                stream.drawImage(image, 0, (height/2), scale * image.getWidth(), scale * image.getHeight());
+                stream.drawImage(image, 0, (height / 2),
+                        scale * image.getWidth(), scale * image.getHeight());
             }
             if (images.length > 3) {
                 bimage = rotateBack(images[3]);
                 image = LosslessFactory.createFromImage(doc, bimage);
-                stream.drawImage(image, 0, 0, scale * image.getWidth(), scale * image.getHeight());
+                stream.drawImage(image, 0, 0,
+                        scale * image.getWidth(), scale * image.getHeight());
             }
 
             stream.close();
@@ -147,36 +171,40 @@ public class PDFBooklet {
                 if (images.length > 1) {
                     bimage = rotateForward(images[1]);
                     image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, (height/2), scale * image.getWidth(), scale * image.getHeight());
+                    stream.drawImage(image, 0, (height / 2),
+                            scale * image.getWidth(), scale * image.getHeight());
                 }
                 if (images.length > 2) {
                     bimage = rotateForward(images[2]);
                     image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, 0, scale * image.getWidth(), scale * image.getHeight());
+                    stream.drawImage(image, 0, 0,
+                            scale * image.getWidth(), scale * image.getHeight());
                 }
             } else {
                 if (images.length > 1) {
                     bimage = rotateBack(images[1]);
                     image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, 0, scale * image.getWidth(), scale * image.getHeight());
+                    stream.drawImage(image, 0, 0,
+                            scale * image.getWidth(), scale * image.getHeight());
                 }
                 if (images.length > 2) {
                     bimage = rotateBack(images[2]);
                     image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, (height/2), scale * image.getWidth(), scale * image.getHeight());
+                    stream.drawImage(image, 0, (height / 2),
+                            scale * image.getWidth(), scale * image.getHeight());
                 }
             }
 
             stream.close();
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
     /**
      * Rotate an image 90 degrees anti-clockwise.
+     *
      * @param image to be rotated.
      * @return the rotated image.
      */
@@ -184,7 +212,7 @@ public class PDFBooklet {
         final int w = image.getWidth();
         final int h = image.getHeight();
         final BufferedImage rotated = new BufferedImage(h, w, image.getType());
-        Graphics2D g2d = (Graphics2D)rotated.getGraphics();
+        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
 
         // Create transform.
         final AffineTransform at = new AffineTransform();
@@ -199,6 +227,7 @@ public class PDFBooklet {
 
     /**
      * Rotate an image 90 degrees clockwise.
+     *
      * @param image to be rotated.
      * @return the rotated image.
      */
@@ -206,7 +235,7 @@ public class PDFBooklet {
         final int w = image.getWidth();
         final int h = image.getHeight();
         final BufferedImage rotated = new BufferedImage(h, w, image.getType());
-        Graphics2D g2d = (Graphics2D)rotated.getGraphics();
+        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
 
         // Create transform.
         final AffineTransform at = new AffineTransform();
