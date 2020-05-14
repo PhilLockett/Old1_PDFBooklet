@@ -3,7 +3,7 @@
  * document. It requires 2 parameter, the source PDF and the name of the new
  * PDF.
  * 
- * Example uages:
+ * Example usage:
  *  java -jar path-to-PDFBooklet.jar path-to-source.pdf path-to-new.pdf
  * 
  * Dependencies:
@@ -11,7 +11,7 @@
  * 
  * Currently this code only supports a single sheet bifolium. In other words, a
  * single sheet contains 4 pages, 2 on each side. In this way, when the sheet is
- * folded in half a booklet is formed. For more information see:
+ * folded in half a booklet is formed. For more information, see:
  *  https://en.wikipedia.org/wiki/Bookbinding#Terms_and_techniques
  *  https://www.formaxprinting.com/blog/2016/11/
  *      booklet-layout-how-to-arrange-the-pages-of-a-saddle-stitched-booklet/
