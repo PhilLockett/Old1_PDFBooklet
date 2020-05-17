@@ -1,6 +1,6 @@
 /*
  * PDFBooklet is a simple, crude program to generate a booklet form of a PDF
- * document. It requires 2 parameter, the source PDF and the name of the new
+ * document. It requires 2 parameters, the source PDF and the name of the new
  * PDF.
  * 
  * Example usage:
@@ -10,22 +10,26 @@
  *  PDFbox (pdfbox-app-2.0.19.jar)
  * 
  * Currently this code only supports a single sheet bifolium. In other words, a
- * single sheet contains 4 pages, 2 on each side. In this way, when the sheet is
- * folded in half a booklet is formed. For more information, see:
+ * single sheet containing 4 pages, 2 on each side. In this way, when the sheet
+ * is folded in half a booklet is formed. For more information, see:
  *  https://en.wikipedia.org/wiki/Bookbinding#Terms_and_techniques
  *  https://www.formaxprinting.com/blog/2016/11/
  *      booklet-layout-how-to-arrange-the-pages-of-a-saddle-stitched-booklet/
  *  https://www.studentbookbinding.co.uk/blog/
  *      how-to-set-up-pagination-section-sewn-bindings
  * 
- * The document is processed in groups of 4 pages for each sheet of paper. The
- * 4th page is drawn on the left of one side of the sheet in landscape
- * orientation and the 1st page on the right. On the reverse side, the 2nd page
- * is drawn on the left and the 3rd page on the right.
- * 
  * The implementation is crude in that the source pages are captured as images
- * which are rotated, scaled an arranged on the pages. As a result, the
- * generated document is quite large.
+ * which are then rotated, scaled and arranged on the pages. As a result, the
+ * generated document is significantly larger and grainier.
+ * 
+ * The document is processed in groups of 4 pages for each sheet of paper, where
+ * each page is captured as a BufferedImage. The 4th page is rotated anti-
+ * clockwise and scaled to fit on the bottom half of one side of the sheet. The
+ * 1st page is rotated anti-clockwise and scaled to fit on the top half of the
+ * same side of the sheet. On the reverse side, the 2nd page is rotated
+ * clockwise and scaled to fit on the top half and the 3rd page is rotated
+ * clockwise and scaled to fit on the bottom half. This process is repeated for
+ * all groups of 4 pages in the source document.
  */
 package com.phillockett65;
 
@@ -218,8 +222,6 @@ public class PDFBooklet {
     private static BufferedImage rotateBack(BufferedImage image) {
         final int w = image.getWidth();
         final int h = image.getHeight();
-        final BufferedImage rotated = new BufferedImage(h, w, image.getType());
-        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
 
         // Create transform.
         final AffineTransform at = new AffineTransform();
@@ -227,6 +229,8 @@ public class PDFBooklet {
         at.translate(-w, 0);
 
         // Draw image onto rotated.
+        final BufferedImage rotated = new BufferedImage(h, w, image.getType());
+        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
         g2d.drawImage(image, at, null);
 
         return rotated;
@@ -241,8 +245,6 @@ public class PDFBooklet {
     private static BufferedImage rotateForward(BufferedImage image) {
         final int w = image.getWidth();
         final int h = image.getHeight();
-        final BufferedImage rotated = new BufferedImage(h, w, image.getType());
-        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
 
         // Create transform.
         final AffineTransform at = new AffineTransform();
@@ -250,6 +252,8 @@ public class PDFBooklet {
         at.translate(0, -h);
 
         // Draw image onto rotated.
+        final BufferedImage rotated = new BufferedImage(h, w, image.getType());
+        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
         g2d.drawImage(image, at, null);
 
         return rotated;
