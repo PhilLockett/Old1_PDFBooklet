@@ -145,29 +145,29 @@ public class PDFBooklet {
      */
     private static void addImagesToPdf(BufferedImage[] images, PDDocument doc) {
         try {
+            final float scale = (float) PPI * HEIGHT / (DPI * WIDTH * 2);
+            BufferedImage image;
+            PDImageXObject img;
+
             // Draw images to front of sheet.
             PDPage page = new PDPage(PS);
+            doc.addPage(page);
+            PDPageContentStream stream = new PDPageContentStream(doc, page);
+
             PDRectangle rectangle = page.getMediaBox();
             float height = rectangle.getHeight();
 
-            doc.addPage(page);
-            final float scale = (float) PPI * HEIGHT / (DPI * WIDTH * 2);
-
-            PDPageContentStream stream = new PDPageContentStream(doc, page);
-            PDImageXObject image;
-            BufferedImage bimage;
-
             if (images.length > 0) {
-                bimage = rotateBack(images[0]);
-                image = LosslessFactory.createFromImage(doc, bimage);
-                stream.drawImage(image, 0, (height / 2),
-                        scale * image.getWidth(), scale * image.getHeight());
+                image = rotateBack(images[0]);
+                img = LosslessFactory.createFromImage(doc, image);
+                stream.drawImage(img, 0, (height / 2),
+                        scale * img.getWidth(), scale * img.getHeight());
             }
             if (images.length > 3) {
-                bimage = rotateBack(images[3]);
-                image = LosslessFactory.createFromImage(doc, bimage);
-                stream.drawImage(image, 0, 0,
-                        scale * image.getWidth(), scale * image.getHeight());
+                image = rotateBack(images[3]);
+                img = LosslessFactory.createFromImage(doc, image);
+                stream.drawImage(img, 0, 0,
+                        scale * img.getWidth(), scale * img.getHeight());
             }
 
             stream.close();
@@ -175,34 +175,33 @@ public class PDFBooklet {
             // Draw images to back of sheet.
             page = new PDPage(PS);
             doc.addPage(page);
-
             stream = new PDPageContentStream(doc, page);
 
             if (flip) {
                 if (images.length > 1) {
-                    bimage = rotateForward(images[1]);
-                    image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, (height / 2),
-                            scale * image.getWidth(), scale * image.getHeight());
+                    image = rotateForward(images[1]);
+                    img = LosslessFactory.createFromImage(doc, image);
+                    stream.drawImage(img, 0, (height / 2),
+                            scale * img.getWidth(), scale * img.getHeight());
                 }
                 if (images.length > 2) {
-                    bimage = rotateForward(images[2]);
-                    image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, 0,
-                            scale * image.getWidth(), scale * image.getHeight());
+                    image = rotateForward(images[2]);
+                    img = LosslessFactory.createFromImage(doc, image);
+                    stream.drawImage(img, 0, 0,
+                            scale * img.getWidth(), scale * img.getHeight());
                 }
             } else {
                 if (images.length > 1) {
-                    bimage = rotateBack(images[1]);
-                    image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, 0,
-                            scale * image.getWidth(), scale * image.getHeight());
+                    image = rotateBack(images[1]);
+                    img = LosslessFactory.createFromImage(doc, image);
+                    stream.drawImage(img, 0, 0,
+                            scale * img.getWidth(), scale * img.getHeight());
                 }
                 if (images.length > 2) {
-                    bimage = rotateBack(images[2]);
-                    image = LosslessFactory.createFromImage(doc, bimage);
-                    stream.drawImage(image, 0, (height / 2),
-                            scale * image.getWidth(), scale * image.getHeight());
+                    image = rotateBack(images[2]);
+                    img = LosslessFactory.createFromImage(doc, image);
+                    stream.drawImage(img, 0, (height / 2),
+                            scale * img.getWidth(), scale * img.getHeight());
                 }
             }
 
