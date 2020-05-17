@@ -145,6 +145,7 @@ public class PDFBooklet {
      */
     private static void addImagesToPdf(BufferedImage[] images, PDDocument doc) {
         try {
+            final int count = images.length;
             final float scale = (float) PPI * HEIGHT / (DPI * WIDTH * 2);
             BufferedImage image;
             PDImageXObject img;
@@ -157,14 +158,14 @@ public class PDFBooklet {
             PDRectangle rectangle = page.getMediaBox();
             float height = rectangle.getHeight();
 
-            if (images.length > 0) {
-                image = rotateBack(images[0]);
+            if (count > 0) {
+                image = flipBackward(images[0]);
                 img = LosslessFactory.createFromImage(doc, image);
                 stream.drawImage(img, 0, (height / 2),
                         scale * img.getWidth(), scale * img.getHeight());
             }
-            if (images.length > 3) {
-                image = rotateBack(images[3]);
+            if (count > 3) {
+                image = flipBackward(images[3]);
                 img = LosslessFactory.createFromImage(doc, image);
                 stream.drawImage(img, 0, 0,
                         scale * img.getWidth(), scale * img.getHeight());
@@ -178,27 +179,27 @@ public class PDFBooklet {
             stream = new PDPageContentStream(doc, page);
 
             if (flip) {
-                if (images.length > 1) {
-                    image = rotateForward(images[1]);
+                if (count > 1) {
+                    image = flipForward(images[1]);
                     img = LosslessFactory.createFromImage(doc, image);
                     stream.drawImage(img, 0, (height / 2),
                             scale * img.getWidth(), scale * img.getHeight());
                 }
-                if (images.length > 2) {
-                    image = rotateForward(images[2]);
+                if (count > 2) {
+                    image = flipForward(images[2]);
                     img = LosslessFactory.createFromImage(doc, image);
                     stream.drawImage(img, 0, 0,
                             scale * img.getWidth(), scale * img.getHeight());
                 }
             } else {
-                if (images.length > 1) {
-                    image = rotateBack(images[1]);
+                if (count > 1) {
+                    image = flipBackward(images[1]);
                     img = LosslessFactory.createFromImage(doc, image);
                     stream.drawImage(img, 0, 0,
                             scale * img.getWidth(), scale * img.getHeight());
                 }
-                if (images.length > 2) {
-                    image = rotateBack(images[2]);
+                if (count > 2) {
+                    image = flipBackward(images[2]);
                     img = LosslessFactory.createFromImage(doc, image);
                     stream.drawImage(img, 0, (height / 2),
                             scale * img.getWidth(), scale * img.getHeight());
@@ -218,7 +219,7 @@ public class PDFBooklet {
      * @param image to be rotated.
      * @return the rotated image.
      */
-    private static BufferedImage rotateBack(BufferedImage image) {
+    private static BufferedImage flipBackward(BufferedImage image) {
         final int w = image.getWidth();
         final int h = image.getHeight();
 
@@ -241,7 +242,7 @@ public class PDFBooklet {
      * @param image to be rotated.
      * @return the rotated image.
      */
-    private static BufferedImage rotateForward(BufferedImage image) {
+    private static BufferedImage flipForward(BufferedImage image) {
         final int w = image.getWidth();
         final int h = image.getHeight();
 
