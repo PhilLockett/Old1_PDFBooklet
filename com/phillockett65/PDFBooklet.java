@@ -55,9 +55,6 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 public class PDFBooklet {
 
     private final static int DPI = 300;         // Dots Per Inch
-    private final static int PPI = 72;          // Points Per Inch
-    private final static float WIDTH = 8.5f;    // Paper width in Inches
-    private final static float HEIGHT = 11f;    // Paper height in Inches
     private final static PDRectangle PS = PDRectangle.LETTER;
     private final static ImageType IT = ImageType.GRAY;
 
@@ -146,29 +143,20 @@ public class PDFBooklet {
     private static void addImagesToPdf(BufferedImage[] images, PDDocument doc) {
         try {
             final int count = images.length;
-            final float scale = (float) PPI * HEIGHT / (DPI * WIDTH * 2);
             BufferedImage image;
-            PDImageXObject img;
 
             // Draw images to front of sheet.
             PDPage page = new PDPage(PS);
             doc.addPage(page);
             PDPageContentStream stream = new PDPageContentStream(doc, page);
 
-            PDRectangle rectangle = page.getMediaBox();
-            float height = rectangle.getHeight();
-
             if (count > 0) {
                 image = flipBackward(images[0]);
-                img = LosslessFactory.createFromImage(doc, image);
-                stream.drawImage(img, 0, (height / 2),
-                        scale * img.getWidth(), scale * img.getHeight());
+                addImageToPdf(image, doc, page, stream, true);
             }
             if (count > 3) {
                 image = flipBackward(images[3]);
-                img = LosslessFactory.createFromImage(doc, image);
-                stream.drawImage(img, 0, 0,
-                        scale * img.getWidth(), scale * img.getHeight());
+                addImageToPdf(image, doc, page, stream, false);
             }
 
             stream.close();
@@ -181,28 +169,20 @@ public class PDFBooklet {
             if (flip) {
                 if (count > 1) {
                     image = flipForward(images[1]);
-                    img = LosslessFactory.createFromImage(doc, image);
-                    stream.drawImage(img, 0, (height / 2),
-                            scale * img.getWidth(), scale * img.getHeight());
+                    addImageToPdf(image, doc, page, stream, true);
                 }
                 if (count > 2) {
                     image = flipForward(images[2]);
-                    img = LosslessFactory.createFromImage(doc, image);
-                    stream.drawImage(img, 0, 0,
-                            scale * img.getWidth(), scale * img.getHeight());
+                    addImageToPdf(image, doc, page, stream, false);
                 }
             } else {
                 if (count > 1) {
                     image = flipBackward(images[1]);
-                    img = LosslessFactory.createFromImage(doc, image);
-                    stream.drawImage(img, 0, 0,
-                            scale * img.getWidth(), scale * img.getHeight());
+                    addImageToPdf(image, doc, page, stream, true);
                 }
                 if (count > 2) {
                     image = flipBackward(images[2]);
-                    img = LosslessFactory.createFromImage(doc, image);
-                    stream.drawImage(img, 0, (height / 2),
-                            scale * img.getWidth(), scale * img.getHeight());
+                    addImageToPdf(image, doc, page, stream, false);
                 }
             }
 
@@ -211,6 +191,53 @@ public class PDFBooklet {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Add a buffered image to the top or bottom of a page in a PDF document.
+     * The image is scaled to fit and centered.
+     *
+     * @param image to add to document.
+     * @param doc PDF document to add image to.
+     * @param page of the PDF document to add image to.
+     * @param stream of the PDF document to add image to.
+     * @param top flag to indicate top or bottom of the page
+     * @throws IOException
+     */
+    private static void addImageToPdf(BufferedImage image, PDDocument doc,
+            PDPage page, PDPageContentStream stream, boolean top)
+            throws IOException {
+
+        float scale;
+        PDRectangle rectangle = page.getMediaBox();
+        final float width = rectangle.getWidth();       // These values 
+        final float height = rectangle.getHeight();     // are in PPI.
+        final float hHeight = (height / 2);             // Half height.
+        final float base = top ? hHeight : 0f;
+        float dx = 0f;
+        float dy = 0f;
+
+        // Create the PDImage.
+        PDImageXObject img = LosslessFactory.createFromImage(doc, image);
+        final int w = image.getWidth();
+        final int h = image.getHeight();
+
+        // Calculate the Aspect Ratio of the image.
+        final float IAR = w / h;    // "image" Aspect Ratio.
+
+        // Calculate the Aspect Ratio of half the page (view port).
+        final float VPAR = width / hHeight; // View Port Aspect Ratio.
+
+        // Calculate "scale" based on the images aspect ratio and centre it.
+        if (IAR < VPAR) {
+            scale = hHeight / h;
+            dx = (width - (w * scale)) / 2;
+        } else {
+            scale = width / w;
+            dy = (hHeight - (h * scale)) / 2;
+        }
+
+        stream.drawImage(img, dx, base + dy, scale * w, scale * h);
     }
 
     /**
