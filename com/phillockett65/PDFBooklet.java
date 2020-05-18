@@ -151,11 +151,11 @@ public class PDFBooklet {
             PDPageContentStream stream = new PDPageContentStream(doc, page);
 
             if (count > 0) {
-                image = flipBackward(images[0]);
+                image = flip(images[0], false);
                 addImageToPdf(image, doc, page, stream, true);
             }
             if (count > 3) {
-                image = flipBackward(images[3]);
+                image = flip(images[3], false);
                 addImageToPdf(image, doc, page, stream, false);
             }
 
@@ -168,20 +168,20 @@ public class PDFBooklet {
 
             if (flip) {
                 if (count > 1) {
-                    image = flipForward(images[1]);
+                    image = flip(images[1], true);
                     addImageToPdf(image, doc, page, stream, true);
                 }
                 if (count > 2) {
-                    image = flipForward(images[2]);
+                    image = flip(images[2], true);
                     addImageToPdf(image, doc, page, stream, false);
                 }
             } else {
                 if (count > 1) {
-                    image = flipBackward(images[1]);
+                    image = flip(images[1], false);
                     addImageToPdf(image, doc, page, stream, true);
                 }
                 if (count > 2) {
-                    image = flipBackward(images[2]);
+                    image = flip(images[2], false);
                     addImageToPdf(image, doc, page, stream, false);
                 }
             }
@@ -241,19 +241,25 @@ public class PDFBooklet {
     }
 
     /**
-     * Rotate an image 90 degrees anti-clockwise.
+     * Rotate an image 90 degrees clockwise or anti-clockwise.
      *
      * @param image to be rotated.
+     * @param clockwise direction flag
      * @return the rotated image.
      */
-    private static BufferedImage flipBackward(BufferedImage image) {
+    private static BufferedImage flip(BufferedImage image, boolean clockwise) {
         final int w = image.getWidth();
         final int h = image.getHeight();
 
         // Create transform.
         final AffineTransform at = new AffineTransform();
-        at.quadrantRotate(3);
-        at.translate(-w, 0);
+        if (clockwise) {
+            at.quadrantRotate(1);
+            at.translate(0, -h);
+        } else {
+            at.quadrantRotate(3);
+            at.translate(-w, 0);
+        }
 
         // Draw image onto rotated.
         final BufferedImage rotated = new BufferedImage(h, w, image.getType());
@@ -263,26 +269,4 @@ public class PDFBooklet {
         return rotated;
     }
 
-    /**
-     * Rotate an image 90 degrees clockwise.
-     *
-     * @param image to be rotated.
-     * @return the rotated image.
-     */
-    private static BufferedImage flipForward(BufferedImage image) {
-        final int w = image.getWidth();
-        final int h = image.getHeight();
-
-        // Create transform.
-        final AffineTransform at = new AffineTransform();
-        at.quadrantRotate(1);
-        at.translate(0, -h);
-
-        // Draw image onto rotated.
-        final BufferedImage rotated = new BufferedImage(h, w, image.getType());
-        Graphics2D g2d = (Graphics2D) rotated.getGraphics();
-        g2d.drawImage(image, at, null);
-
-        return rotated;
-    }
 }
