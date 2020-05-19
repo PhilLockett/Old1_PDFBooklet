@@ -54,47 +54,127 @@ import org.apache.pdfbox.rendering.PDFRenderer;
  */
 public class PDFBooklet {
 
-    private final static int DPI = 300;         // Dots Per Inch
-    private final static PDRectangle PS = PDRectangle.LETTER;
-    private final static ImageType IT = ImageType.GRAY;
+    private int DPI = 300;         // Dots Per Inch
+    private PDRectangle PS = PDRectangle.LETTER;
+    private ImageType IT = ImageType.GRAY;
+
+    private final String sourcePDF;     // The source PDF filepath.
+    private final String outputPDF;     // The generated PDF filepath.
+
+    private PDDocument inputDoc;        // The source PDF document.
+    private PDDocument outputDoc;       // The generated PDF document.
+    private PDPage page;                // Current page of "outputDoc".
+    private PDPageContentStream stream; // Current stream of "outputDoc".
+    private float width;                // "page" width in Points Per Inch.
+    private float height;               // "page" height in Points Per Inch.
+    private float hHeight;              // Half height.
+
+    // Calculate the Aspect Ratio of half the page (view port).
+    private float VPAR;                 // View Port Aspect Ratio.
 
     private static int sheetCount = 1;
     private static boolean flip = true;         // Required?
+
+    /**
+     * Constructor.
+     *
+     * @param inPDF file path for source PDF.
+     * @param outPDF file path for generated PDF.
+     */
+    public PDFBooklet(String inPDF, String outPDF) {
+        sourcePDF = inPDF;
+        outputPDF = outPDF;
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            PdfToImages(args[0], args[1]);
+            PDFBooklet app = new PDFBooklet(args[0], args[1]);
+            app.setDotsPerInch(300);
+            app.setPageSize(PDRectangle.LETTER);
+            app.setImageType(ImageType.GRAY);
+
+            app.PdfToImages();
+        }
+    }
+
+    public void setDotsPerInch(int val) {
+        DPI = val;
+    }
+
+    public void setPageSize(PDRectangle size) {
+        PS = size;
+    }
+
+    public void setImageType(ImageType type) {
+        IT = type;
+    }
+
+    /**
+     * Add a new page to "outputDoc".
+     */
+    public void addNewPage() {
+        page = new PDPage(PS);
+        outputDoc.addPage(page);
+
+        final PDRectangle rectangle = page.getMediaBox();
+        width = rectangle.getWidth();
+        height = rectangle.getHeight();
+        hHeight = (height / 2);
+
+        // Calculate the Aspect Ratio of half the page (view port).
+        VPAR = width / hHeight; // View Port Aspect Ratio.
+    }
+
+    /**
+     * Start a new stream on the current page of "outputDoc".
+     */
+    public void startNewStream() {
+        try {
+            stream = new PDPageContentStream(outputDoc, page);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Close the current stream of "outputDoc".
+     */
+    public void endStream() {
+        try {
+            stream.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     /**
      * Generate a booklet style PDF using a crude images of pages technique.
-     *
-     * @param sourcePDF original document.
-     * @param outputPDF booklet form of original document.
      */
-    private static void PdfToImages(String sourcePDF, String outputPDF) {
-        try (PDDocument inputDoc = PDDocument.load(new File(sourcePDF))) {
+    private void PdfToImages() {
+        try {
+            inputDoc = PDDocument.load(new File(sourcePDF));
             final int MAX = inputDoc.getNumberOfPages();
 
-            try (PDDocument outputDoc = new PDDocument()) {
+            try {
+                outputDoc = new PDDocument();
                 for (int first = 0; first < MAX; first += 4 * sheetCount) {
                     int last = first + 4 * sheetCount;
                     if (last > MAX) {
                         last = MAX;
                     }
 
-                    BufferedImage[] imageArray = pdfToImageArray(inputDoc,
-                            first, last);
-                    addImagesToPdf(imageArray, outputDoc);
+                    BufferedImage[] imageArray = pdfToImageArray(first, last);
+                    addImagesToPdf(imageArray);
                     System.out.printf("Pages %d to %d\n", first + 1, last);
                 }
                 inputDoc.close();
 
                 outputDoc.save(outputPDF);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
 
             System.out.println("File created in: " + outputPDF);
@@ -106,16 +186,14 @@ public class PDFBooklet {
     /**
      * Create an array of images of pages from a PDF document.
      *
-     * @param doc PDF document to read.
      * @param first page to grab from inputDoc (pages start from 0).
      * @param last stop grabbing pages BEFORE reaching the last page.
      * @return a BufferedImage array containing the page images.
      */
-    private static BufferedImage[] pdfToImageArray(PDDocument doc,
-            int first, int last) {
+    private BufferedImage[] pdfToImageArray(int first, int last) {
         ArrayList<BufferedImage> images = new ArrayList<>();
 
-        PDFRenderer renderer = new PDFRenderer(doc);
+        PDFRenderer renderer = new PDFRenderer(inputDoc);
         for (int page = first; page < last; ++page) {
             try {
                 BufferedImage bim = renderer.renderImageWithDPI(page, DPI, IT);
@@ -137,56 +215,49 @@ public class PDFBooklet {
      * Images 4 and 1 are drawn to the front of the sheet and images 2 and 3 are
      * drawn to the back of the sheet.
      *
-     * @param images to be added to document in booklet arrangement.
-     * @param doc to add images to.
+     * @param images array to be added to document in booklet arrangement.
      */
-    private static void addImagesToPdf(BufferedImage[] images, PDDocument doc) {
+    private void addImagesToPdf(BufferedImage[] images) {
         try {
             final int count = images.length;
             BufferedImage image;
 
             // Draw images to front of sheet.
-            PDPage page = new PDPage(PS);
-            doc.addPage(page);
-            PDPageContentStream stream = new PDPageContentStream(doc, page);
-
+            addNewPage();
+            startNewStream();
             if (count > 0) {
                 image = flip(images[0], false);
-                addImageToPdf(image, doc, page, stream, true);
+                addImageToPdf(image, true);
             }
             if (count > 3) {
                 image = flip(images[3], false);
-                addImageToPdf(image, doc, page, stream, false);
+                addImageToPdf(image, false);
             }
-
-            stream.close();
+            endStream();
 
             // Draw images to back of sheet.
-            page = new PDPage(PS);
-            doc.addPage(page);
-            stream = new PDPageContentStream(doc, page);
-
+            addNewPage();
+            startNewStream();
             if (flip) {
                 if (count > 1) {
                     image = flip(images[1], true);
-                    addImageToPdf(image, doc, page, stream, true);
+                    addImageToPdf(image, true);
                 }
                 if (count > 2) {
                     image = flip(images[2], true);
-                    addImageToPdf(image, doc, page, stream, false);
+                    addImageToPdf(image, false);
                 }
             } else {
                 if (count > 1) {
                     image = flip(images[1], false);
-                    addImageToPdf(image, doc, page, stream, true);
+                    addImageToPdf(image, true);
                 }
                 if (count > 2) {
                     image = flip(images[2], false);
-                    addImageToPdf(image, doc, page, stream, false);
+                    addImageToPdf(image, false);
                 }
             }
-
-            stream.close();
+            endStream();
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -198,37 +269,23 @@ public class PDFBooklet {
      * The image is scaled to fit and centered.
      *
      * @param image to add to document.
-     * @param doc PDF document to add image to.
-     * @param page of the PDF document to add image to.
-     * @param stream of the PDF document to add image to.
      * @param top flag to indicate top or bottom of the page
      * @throws IOException
      */
-    private static void addImageToPdf(BufferedImage image, PDDocument doc,
-            PDPage page, PDPageContentStream stream, boolean top)
+    private void addImageToPdf(BufferedImage image, boolean top)
             throws IOException {
 
-        float scale;
-        PDRectangle rectangle = page.getMediaBox();
-        final float width = rectangle.getWidth();       // These values 
-        final float height = rectangle.getHeight();     // are in PPI.
-        final float hHeight = (height / 2);             // Half height.
         final float base = top ? hHeight : 0f;
-        float dx = 0f;
-        float dy = 0f;
 
-        // Create the PDImage.
-        PDImageXObject img = LosslessFactory.createFromImage(doc, image);
+        // Calculate the Aspect Ratio of "image".
         final int w = image.getWidth();
         final int h = image.getHeight();
-
-        // Calculate the Aspect Ratio of the image.
         final float IAR = w / h;    // "image" Aspect Ratio.
 
-        // Calculate the Aspect Ratio of half the page (view port).
-        final float VPAR = width / hHeight; // View Port Aspect Ratio.
-
-        // Calculate "scale" based on the images aspect ratio and centre it.
+        // Calculate "scale" based on the aspect ratio of "image" and centre it.
+        float scale;
+        float dx = 0f;
+        float dy = 0f;
         if (IAR < VPAR) {
             scale = hHeight / h;
             dx = (width - (w * scale)) / 2;
@@ -237,6 +294,8 @@ public class PDFBooklet {
             dy = (hHeight - (h * scale)) / 2;
         }
 
+        // Create the PDImage and draw it on the page.
+        PDImageXObject img = LosslessFactory.createFromImage(outputDoc, image);
         stream.drawImage(img, dx, base + dy, scale * w, scale * h);
     }
 
