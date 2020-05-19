@@ -73,7 +73,9 @@ public class PDFBooklet {
     private float VPAR;                 // View Port Aspect Ratio.
 
     private static int sheetCount = 1;
-    private static boolean flip = true;         // Required?
+    private static boolean FLIP = true;         // Required?
+
+    private static boolean TESTING = false;
 
     /**
      * Constructor.
@@ -115,7 +117,7 @@ public class PDFBooklet {
     /**
      * Add a new page to "outputDoc".
      */
-    public void addNewPage() {
+    private void addNewPage() {
         page = new PDPage(PS);
         outputDoc.addPage(page);
 
@@ -131,7 +133,7 @@ public class PDFBooklet {
     /**
      * Start a new stream on the current page of "outputDoc".
      */
-    public void startNewStream() {
+    private void startNewStream() {
         try {
             stream = new PDPageContentStream(outputDoc, page);
         } catch (IOException e) {
@@ -142,7 +144,7 @@ public class PDFBooklet {
     /**
      * Close the current stream of "outputDoc".
      */
-    public void endStream() {
+    private void endStream() {
         try {
             stream.close();
         } catch (IOException e) {
@@ -169,6 +171,8 @@ public class PDFBooklet {
                     BufferedImage[] imageArray = pdfToImageArray(first, last);
                     addImagesToPdf(imageArray);
                     System.out.printf("Pages %d to %d\n", first + 1, last);
+                    if (TESTING && first > 6)
+                        break;
                 }
                 inputDoc.close();
 
@@ -238,7 +242,7 @@ public class PDFBooklet {
             // Draw images to back of sheet.
             addNewPage();
             startNewStream();
-            if (flip) {
+            if (FLIP) {
                 if (count > 1) {
                     image = flip(images[1], true);
                     addImageToPdf(image, true);
