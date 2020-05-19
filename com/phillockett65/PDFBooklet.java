@@ -155,7 +155,7 @@ public class PDFBooklet {
     /**
      * Generate a booklet style PDF using a crude images of pages technique.
      */
-    private void genBooklet() {
+    public void genBooklet() {
         try {
             inputDoc = PDDocument.load(new File(sourcePDF));
             final int MAX = inputDoc.getNumberOfPages();
