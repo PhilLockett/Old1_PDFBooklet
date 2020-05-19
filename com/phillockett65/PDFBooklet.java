@@ -93,12 +93,12 @@ public class PDFBooklet {
      */
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            PDFBooklet app = new PDFBooklet(args[0], args[1]);
-            app.setDotsPerInch(300);
-            app.setPageSize(PDRectangle.LETTER);
-            app.setImageType(ImageType.GRAY);
+            PDFBooklet booklet = new PDFBooklet(args[0], args[1]);
+            booklet.setDotsPerInch(300);
+            booklet.setPageSize(PDRectangle.LETTER);
+            booklet.setImageType(ImageType.GRAY);
 
-            app.PdfToImages();
+            booklet.genBooklet();
         }
     }
 
@@ -155,7 +155,7 @@ public class PDFBooklet {
     /**
      * Generate a booklet style PDF using a crude images of pages technique.
      */
-    private void PdfToImages() {
+    private void genBooklet() {
         try {
             inputDoc = PDDocument.load(new File(sourcePDF));
             final int MAX = inputDoc.getNumberOfPages();
