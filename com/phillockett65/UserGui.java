@@ -17,6 +17,10 @@ import org.apache.pdfbox.rendering.ImageType;
  */
 public class UserGui extends javax.swing.JFrame {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private PDFBooklet booklet;
     private String baseDirectory;
     private String sourcePDF;     // The source PDF filepath.
@@ -106,7 +110,6 @@ public class UserGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
         sourcePDFjLabel = new javax.swing.JLabel();
         sourcePDFjTextField = new javax.swing.JTextField();
         browsejButton = new javax.swing.JButton();
@@ -327,7 +330,6 @@ public class UserGui extends javax.swing.JFrame {
     private javax.swing.JButton generatejButton;
     private javax.swing.JComboBox<String> imageTypejComboBox;
     private javax.swing.JLabel imageTypejLabel;
-    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel outputPDFjLabel;
     private javax.swing.JTextField outputPDFjTextField;
     private javax.swing.JComboBox<String> pageSizejComboBox;
