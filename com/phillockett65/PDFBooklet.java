@@ -282,8 +282,8 @@ public class PDFBooklet {
         final float base = top ? hHeight : 0f;
 
         // Calculate the Aspect Ratio of "image".
-        final int w = image.getWidth();
-        final int h = image.getHeight();
+        final float w = image.getWidth();
+        final float h = image.getHeight();
         final float IAR = w / h;    // "image" Aspect Ratio.
 
         // Calculate "scale" based on the aspect ratio of "image" and centre it.
