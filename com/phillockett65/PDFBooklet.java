@@ -171,15 +171,21 @@ public class PDFBooklet {
                     BufferedImage[] imageArray = pdfToImageArray(first, last);
                     addImagesToPdf(imageArray);
                     System.out.printf("Pages %d to %d\n", first + 1, last);
-                    if (TESTING && first > 6)
+                    if (TESTING && first > 6) {
                         break;
+                    }
                 }
                 outputDoc.save(outputPDF);
+                if (outputDoc != null) {
+                    outputDoc.close();
+                }
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
 
-            inputDoc.close();
+            if (inputDoc != null) {
+                inputDoc.close();
+            }
 
             System.out.println("File created in: " + outputPDF);
         } catch (IOException e) {
