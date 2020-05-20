@@ -274,8 +274,6 @@ public class UserGui extends javax.swing.JFrame {
             baseDirectory = source.getParent();
             if (source.isFile()) {
                 sourcePDF = source.getPath();
-                System.out.printf("sourcePDF %s\n", sourcePDF);
-                System.out.printf("baseDirectory %s\n", baseDirectory);
                 sourcePDFjTextField.setText(sourcePDF); 
 
                 return true;
