@@ -1,7 +1,31 @@
+/*  PDFBooklet - a simple, crude program to generate a booklet from of a PDF.
+ *
+ *  Copyright 2020 Philip Lockett.
+ *
+ *  This file is part of PDFBooklet.
+ *
+ *  PDFBooklet is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  PDFBooklet is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CardGen.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This code provides a simple GUI front-end to the PDFBooklet class and can be
+ * used to generate a booklet from of a source PDF document. 
+ * 
+ * Remember to set the runnable main to UserGui.main().
+ * 
+ * This code is dependent on PDFBooklet.java, which itself is dependent on
+ * PDFbox (pdfbox-app-2.0.19.jar).
  */
 package com.phillockett65;
 

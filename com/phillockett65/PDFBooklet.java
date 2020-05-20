@@ -1,13 +1,35 @@
+/*  PDFBooklet - a simple, crude program to generate a booklet from of a PDF.
+ *
+ *  Copyright 2020 Philip Lockett.
+ *
+ *  This file is part of PDFBooklet.
+ *
+ *  PDFBooklet is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  PDFBooklet is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CardGen.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /*
- * PDFBooklet is a simple, crude program to generate a booklet form of a PDF
- * document. It requires 2 parameters, the source PDF and the name of the new
- * PDF.
+ * As a standalone file, PDFBooklet is a simple, crude program to generate a
+ * booklet from of a source PDF document. It requires 2 parameters, the source
+ * PDF and the name of the new PDF. However, it can be used as a java class, in
+ * which case PDFBooklet.main() should be superseded.
  * 
  * Example usage:
  *  java -jar path-to-PDFBooklet.jar path-to-source.pdf path-to-new.pdf
  * 
  * Dependencies:
  *  PDFbox (pdfbox-app-2.0.19.jar)
+ *  https://pdfbox.apache.org/download.cgi
  * 
  * Currently this code only supports a single sheet bifolium. In other words, a
  * single sheet containing 4 pages, 2 on each side. In this way, when the sheet
