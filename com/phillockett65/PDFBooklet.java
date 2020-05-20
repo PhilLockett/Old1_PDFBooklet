@@ -174,12 +174,12 @@ public class PDFBooklet {
                     if (TESTING && first > 6)
                         break;
                 }
-                inputDoc.close();
-
                 outputDoc.save(outputPDF);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
+
+            inputDoc.close();
 
             System.out.println("File created in: " + outputPDF);
         } catch (IOException e) {
