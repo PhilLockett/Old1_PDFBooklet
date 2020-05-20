@@ -18,7 +18,7 @@ import org.apache.pdfbox.rendering.ImageType;
 public class UserGui extends javax.swing.JFrame {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private PDFBooklet booklet;
@@ -31,15 +31,14 @@ public class UserGui extends javax.swing.JFrame {
      */
     public UserGui() {
         initComponents();
-        initMyComponent();
     }
 
     /**
-     * Creates and initializes all the screen components.
+     * Takes the current selection from the Page Size combo box and converts it
+     * to the corresponding PDRectangle value.
+     *
+     * @return the corresponding PDRectangle value.
      */
-    private void initMyComponent() {
-    }
-
     private PDRectangle getPS() {
         PDRectangle PS = PDRectangle.LETTER;
 
@@ -76,10 +75,23 @@ public class UserGui extends javax.swing.JFrame {
         return PS;
     }
 
+    /**
+     * Takes the current selection from the Dots Per Inch combo box and converts
+     * it to the corresponding int value.
+     *
+     * @return the corresponding PDRectangle value.
+     */
     private int getDPI() {
-        return Integer.parseInt(dotsPerInchjComboBox.getSelectedItem().toString());
+        final String sel = dotsPerInchjComboBox.getSelectedItem().toString();
+        return Integer.parseInt(sel);
     }
 
+    /**
+     * Takes the current selection from the Image Type combo box and converts it
+     * to the corresponding ImageType value.
+     *
+     * @return the corresponding PDRectangle value.
+     */
     private ImageType getIT() {
         ImageType IT = ImageType.ARGB;
 
@@ -250,8 +262,16 @@ public class UserGui extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Acts on the "Generate" button click event.
+     *
+     * @param evt the event that triggered the handler.
+     */
     private void generatejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatejButtonActionPerformed
-        outputPDF = baseDirectory + "\\" + outputPDFjTextField.getText() + ".pdf";
+
+        outputPDF = baseDirectory + "\\" + outputPDFjTextField.getText() +
+                ".pdf";
+
         booklet = new PDFBooklet(sourcePDF, outputPDF);
 
         booklet.setPageSize(getPS());
@@ -261,27 +281,44 @@ public class UserGui extends javax.swing.JFrame {
         booklet.genBooklet();
     }//GEN-LAST:event_generatejButtonActionPerformed
 
+    /**
+     * Select a source PDF file using a JFileChooser.
+     *
+     * @return true if a PDF file is selected, false otherwise.
+     */
     private boolean selectSourcePDF() {
+        // Set up the file selector.
         JFileChooser choice = new JFileChooser(baseDirectory);
         choice.setDialogTitle("Select source PDF document");
         choice.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF Files", "pdf");
+        FileNameExtensionFilter filter;
+        filter = new FileNameExtensionFilter("PDF Files", "pdf");
         choice.setFileFilter(filter);
         choice.setAcceptAllFileFilterUsed(false);
+
+        // Launch the file selector.
         int selected = choice.showOpenDialog(this);
         if (selected == JFileChooser.APPROVE_OPTION) {
+            // Verify the file selection.
             File source = choice.getSelectedFile();
             baseDirectory = source.getParent();
             if (source.isFile()) {
                 sourcePDF = source.getPath();
-                sourcePDFjTextField.setText(sourcePDF); 
+                sourcePDFjTextField.setText(sourcePDF);
 
                 return true;
             }
         }
+
         return false;
     }
 
+    /**
+     * Acts on the "Browse..." button click event and enables the "Generate"
+     * button if a valid source PDF file is selected.
+     *
+     * @param evt the event that triggered the handler.
+     */
     private void browsejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browsejButtonActionPerformed
         generatejButton.setEnabled(selectSourcePDF());
     }//GEN-LAST:event_browsejButtonActionPerformed
