@@ -79,6 +79,7 @@ public class PDFBooklet {
     private int DPI = 300;         // Dots Per Inch
     private PDRectangle PS = PDRectangle.LETTER;
     private ImageType IT = ImageType.GRAY;
+    private static int sheetCount = 1;
 
     private final String sourcePDF;     // The source PDF filepath.
     private final String outputPDF;     // The generated PDF filepath.
@@ -94,7 +95,6 @@ public class PDFBooklet {
     // Calculate the Aspect Ratio of half the page (view port).
     private float VPAR;                 // View Port Aspect Ratio.
 
-    private static int sheetCount = 1;
     private static boolean FLIP = true;         // Required?
 
     private static boolean TESTING = false;
@@ -111,6 +111,8 @@ public class PDFBooklet {
     }
 
     /**
+     * System entry point for stand alone, command line version.
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
@@ -124,6 +126,9 @@ public class PDFBooklet {
         }
     }
 
+    /* 
+     * PDFBooklet attribute setters.
+     */
     public void setDotsPerInch(int val) {
         DPI = val;
     }
@@ -134,6 +139,10 @@ public class PDFBooklet {
 
     public void setImageType(ImageType type) {
         IT = type;
+    }
+
+    public void setSheetCount(int count) {
+        sheetCount = count;
     }
 
     /**
@@ -243,49 +252,55 @@ public class PDFBooklet {
     }
 
     /**
-     * Add images to a PDF document, currently only supports up to 4 images.
-     * Images 4 and 1 are drawn to the front of the sheet and images 2 and 3 are
-     * drawn to the back of the sheet.
+     * Add images to a PDF document.
      *
      * @param images array to be added to document in booklet arrangement.
      */
     private void addImagesToPdf(BufferedImage[] images) {
+
+        final int LAST = 4 * sheetCount;
+        int first = 0;
+        int last = LAST - 1;
+        for (int sheet = 0; sheet < sheetCount; ++sheet) {
+            addImagesToPage(images, first++, last--, false);
+            addImagesToPage(images, first++, last--, FLIP);
+        }
+    }
+
+    /**
+     * Add two images to a page of a PDF document.
+     * 
+     * @param images array to be added to document in booklet arrangement.
+     * @param top index for the top image.
+     * @param bottom index for the bottom image.
+     * @param flip flag to indicate if the images should be flipped clockwise.
+     */
+    private void addImagesToPage(BufferedImage[] images, int top, int bottom,
+            boolean flip) {
+
         try {
             final int count = images.length;
             BufferedImage image;
 
-            // Draw images to front of sheet.
+            // Draw images to current page.
             addNewPage();
             startNewStream();
-            if (count > 0) {
-                image = flip(images[0], false);
-                addImageToPdf(image, true);
-            }
-            if (count > 3) {
-                image = flip(images[3], false);
-                addImageToPdf(image, false);
-            }
-            endStream();
-
-            // Draw images to back of sheet.
-            addNewPage();
-            startNewStream();
-            if (FLIP) {
-                if (count > 1) {
-                    image = flip(images[1], true);
+            if (flip) {
+                if (count > top) {
+                    image = flip(images[top], true);
                     addImageToPdf(image, true);
                 }
-                if (count > 2) {
-                    image = flip(images[2], true);
+                if (count > bottom) {
+                    image = flip(images[bottom], true);
                     addImageToPdf(image, false);
                 }
             } else {
-                if (count > 1) {
-                    image = flip(images[1], false);
+                if (count > top) {
+                    image = flip(images[top], false);
                     addImageToPdf(image, true);
                 }
-                if (count > 2) {
-                    image = flip(images[2], false);
+                if (count > bottom) {
+                    image = flip(images[bottom], false);
                     addImageToPdf(image, false);
                 }
             }
