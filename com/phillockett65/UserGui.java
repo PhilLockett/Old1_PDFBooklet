@@ -179,21 +179,22 @@ public class UserGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDF Booklet Generator 1.0");
-        setPreferredSize(new java.awt.Dimension(620, 260));
+        setPreferredSize(new java.awt.Dimension(670, 280));
         setResizable(false);
         getContentPane().setLayout(null);
 
         sourcePDFjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        sourcePDFjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         sourcePDFjLabel.setText("Source Document:");
         sourcePDFjLabel.setToolTipText("File path to the Source PDF Document.");
         getContentPane().add(sourcePDFjLabel);
-        sourcePDFjLabel.setBounds(10, 29, 115, 17);
+        sourcePDFjLabel.setBounds(25, 30, 130, 17);
 
         sourcePDFjTextField.setEditable(false);
         sourcePDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sourcePDFjTextField.setText(".");
         getContentPane().add(sourcePDFjTextField);
-        sourcePDFjTextField.setBounds(135, 26, 352, 23);
+        sourcePDFjTextField.setBounds(170, 30, 352, 23);
 
         browsejButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         browsejButton.setText("Browse...");
@@ -204,53 +205,56 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(browsejButton);
-        browsejButton.setBounds(505, 25, 89, 25);
+        browsejButton.setBounds(540, 30, 89, 25);
 
         pageSizejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        pageSizejLabel.setText("Page Size:");
+        pageSizejLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        pageSizejLabel.setText("Output Page Size:");
         pageSizejLabel.setToolTipText("Page Size of the generated PDF document.");
         getContentPane().add(pageSizejLabel);
-        pageSizejLabel.setBounds(60, 64, 63, 17);
+        pageSizejLabel.setBounds(23, 70, 130, 17);
 
         pageSizejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pageSizejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A0", "A1", "A2", "A3", "A4", "A5", "A6", "Legal", "Letter" }));
         pageSizejComboBox.setSelectedIndex(8);
         getContentPane().add(pageSizejComboBox);
-        pageSizejComboBox.setBounds(133, 61, 88, 23);
+        pageSizejComboBox.setBounds(170, 70, 88, 23);
 
         dotsPerInchjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        dotsPerInchjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         dotsPerInchjLabel.setText("Dots Per Inch:");
         dotsPerInchjLabel.setToolTipText("Resolution of the page images.");
         getContentPane().add(dotsPerInchjLabel);
-        dotsPerInchjLabel.setBounds(34, 98, 89, 17);
+        dotsPerInchjLabel.setBounds(40, 110, 110, 17);
 
         dotsPerInchjComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         dotsPerInchjComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "300", "600", "1200", "2400" }));
         getContentPane().add(dotsPerInchjComboBox);
-        dotsPerInchjComboBox.setBounds(133, 95, 88, 23);
+        dotsPerInchjComboBox.setBounds(170, 110, 88, 23);
 
         imageTypejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         imageTypejLabel.setText("Image Type:");
         imageTypejLabel.setToolTipText("Image Type of captured page.");
         getContentPane().add(imageTypejLabel);
-        imageTypejLabel.setBounds(45, 132, 78, 17);
+        imageTypejLabel.setBounds(70, 150, 78, 17);
 
         imageTypejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         imageTypejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ARGB", "Binary", "Gray", "RGB" }));
         imageTypejComboBox.setSelectedIndex(2);
         getContentPane().add(imageTypejComboBox);
-        imageTypejComboBox.setBounds(133, 129, 88, 23);
+        imageTypejComboBox.setBounds(170, 150, 88, 23);
 
         outputPDFjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        outputPDFjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         outputPDFjLabel.setText("Output file name:");
         outputPDFjLabel.setToolTipText("Output file name, pdf extension will be added.");
         getContentPane().add(outputPDFjLabel);
-        outputPDFjLabel.setBounds(330, 80, 108, 17);
+        outputPDFjLabel.setBounds(340, 80, 120, 17);
 
         outputPDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         outputPDFjTextField.setText("booklet");
         getContentPane().add(outputPDFjTextField);
-        outputPDFjTextField.setBounds(440, 80, 156, 23);
+        outputPDFjTextField.setBounds(470, 80, 156, 23);
 
         generatejButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         generatejButton.setText("Generate");
@@ -262,13 +266,13 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(generatejButton);
-        generatejButton.setBounds(491, 163, 103, 31);
+        generatejButton.setBounds(520, 190, 103, 31);
 
         sectionSizejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sectionSizejLabel.setText("Section Size:");
         sectionSizejLabel.setToolTipText("Image Type of captured page.");
         getContentPane().add(sectionSizejLabel);
-        sectionSizejLabel.setBounds(45, 166, 78, 17);
+        sectionSizejLabel.setBounds(70, 190, 78, 17);
 
         sectionSizejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sectionSizejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 sheet", "2 sheets", "3 sheets", "4 sheets", "5 sheets", "6 sheets" }));
@@ -278,16 +282,18 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(sectionSizejComboBox);
-        sectionSizejComboBox.setBounds(133, 163, 88, 23);
+        sectionSizejComboBox.setBounds(170, 190, 88, 23);
 
         pagesjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pagesjLabel.setText("(4 pages)");
         getContentPane().add(pagesjLabel);
-        pagesjLabel.setBounds(231, 166, 84, 17);
+        pagesjLabel.setBounds(280, 190, 84, 17);
 
-        backgroundjLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/phillockett65/printing_press_resize_md.jpg"))); // NOI18N
+        backgroundjLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        backgroundjLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/phillockett65/background.jpg"))); // NOI18N
+        backgroundjLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         getContentPane().add(backgroundjLabel);
-        backgroundjLabel.setBounds(-5, -6, 630, 230);
+        backgroundjLabel.setBounds(-5, -6, 680, 270);
 
         pack();
         setLocationRelativeTo(null);
