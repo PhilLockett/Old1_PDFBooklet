@@ -18,7 +18,7 @@
  *  along with CardGen.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
+ /*
  * As a standalone file, PDFBooklet is a simple, crude program to generate a
  * booklet from of a source PDF document. It requires 2 parameters, the source
  * PDF and the name of the new PDF. However, it can be used as a java class, in
@@ -61,6 +61,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventObject;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -99,6 +101,8 @@ public class PDFBooklet {
 
     private static boolean TESTING = false;
 
+    private BookletCB callback = null;
+
     /**
      * Constructor.
      *
@@ -112,7 +116,7 @@ public class PDFBooklet {
 
     /**
      * System entry point for stand alone, command line version.
-     * 
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
@@ -143,6 +147,10 @@ public class PDFBooklet {
 
     public void setSheetCount(int count) {
         sheetCount = count;
+    }
+
+    public void setBookletCallback(BookletCB cb) {
+        callback = cb;
     }
 
     /**
@@ -201,7 +209,14 @@ public class PDFBooklet {
 
                     BufferedImage[] imageArray = pdfToImageArray(first, last);
                     addImagesToPdf(imageArray);
-                    System.out.printf("Pages %d to %d\n", first + 1, last);
+
+                    if (callback == null) {
+                        System.out.printf("Pages %d to %d\n", first + 1, last);
+                    } else {
+                        BookletEvt event = new BookletEvt(this, MAX, last);
+                        callback.handler(event);
+                    }
+
                     if (TESTING && first > 6) {
                         break;
                     }
@@ -269,7 +284,7 @@ public class PDFBooklet {
 
     /**
      * Add two images to a page of a PDF document.
-     * 
+     *
      * @param images array to be added to document in booklet arrangement.
      * @param top index for the top image.
      * @param bottom index for the bottom image.
@@ -373,6 +388,39 @@ public class PDFBooklet {
         g2d.drawImage(image, at, null);
 
         return rotated;
+    }
+
+    /**
+     * Lightweight callback interface.
+     */
+    public interface BookletCB {
+
+        void handler(BookletEvt e);
+    }
+
+    /**
+     * Booklet Event Object definition for callback interface.
+     */
+    public class BookletEvt extends EventObject {
+
+        private static final long serialVersionUID = 1L;
+
+        private final int MAX;
+        private final int pages;
+
+        public BookletEvt(Object source, int max, int page) {
+            super(source);
+            this.MAX = max;
+            this.pages = page;
+        }
+
+        public int getMax() {
+            return MAX;
+        }
+
+        public int getPages() {
+            return pages;
+        }
     }
 
 }
