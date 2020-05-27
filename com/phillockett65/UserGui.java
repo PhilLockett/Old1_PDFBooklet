@@ -18,7 +18,7 @@
  *  along with CardGen.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
+ /*
  * This code provides a simple GUI front-end to the PDFBooklet class and can be
  * used to generate a booklet from of a source PDF document. 
  * 
@@ -147,9 +147,8 @@ public class UserGui extends javax.swing.JFrame {
      */
     private int getSheetCount() {
         final int sel = sectionSizejComboBox.getSelectedIndex();
-        return sel+1;
+        return sel + 1;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -246,7 +245,7 @@ public class UserGui extends javax.swing.JFrame {
 
         outputPDFjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         outputPDFjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        outputPDFjLabel.setText("Output file name:");
+        outputPDFjLabel.setText("Output File Name:");
         outputPDFjLabel.setToolTipText("Output file name, pdf extension will be added.");
         getContentPane().add(outputPDFjLabel);
         outputPDFjLabel.setBounds(340, 80, 120, 17);
@@ -306,8 +305,8 @@ public class UserGui extends javax.swing.JFrame {
      */
     private void generatejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatejButtonActionPerformed
 
-        outputPDF = baseDirectory + "\\" + outputPDFjTextField.getText() +
-                ".pdf";
+        outputPDF = baseDirectory + "\\" + outputPDFjTextField.getText()
+                + ".pdf";
 
         booklet = new PDFBooklet(sourcePDF, outputPDF);
 
