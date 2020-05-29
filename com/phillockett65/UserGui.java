@@ -29,9 +29,12 @@
  */
 package com.phillockett65;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.ImageType;
@@ -174,12 +177,13 @@ public class UserGui extends javax.swing.JFrame {
         sectionSizejLabel = new javax.swing.JLabel();
         sectionSizejComboBox = new javax.swing.JComboBox<>();
         pagesjLabel = new javax.swing.JLabel();
+        generatejProgressBar = new javax.swing.JProgressBar();
+        outputjLabel = new javax.swing.JLabel();
         backgroundjLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PDF Booklet Generator 1.0");
         setPreferredSize(new java.awt.Dimension(670, 280));
-        setResizable(false);
         getContentPane().setLayout(null);
 
         sourcePDFjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -187,13 +191,13 @@ public class UserGui extends javax.swing.JFrame {
         sourcePDFjLabel.setText("Source Document:");
         sourcePDFjLabel.setToolTipText("File path to the Source PDF Document.");
         getContentPane().add(sourcePDFjLabel);
-        sourcePDFjLabel.setBounds(25, 30, 130, 17);
+        sourcePDFjLabel.setBounds(30, 10, 130, 17);
 
         sourcePDFjTextField.setEditable(false);
         sourcePDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sourcePDFjTextField.setText(".");
         getContentPane().add(sourcePDFjTextField);
-        sourcePDFjTextField.setBounds(170, 30, 352, 23);
+        sourcePDFjTextField.setBounds(170, 10, 352, 23);
 
         browsejButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         browsejButton.setText("Browse...");
@@ -204,56 +208,56 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(browsejButton);
-        browsejButton.setBounds(540, 30, 89, 25);
+        browsejButton.setBounds(540, 10, 89, 25);
 
         pageSizejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pageSizejLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pageSizejLabel.setText("Output Page Size:");
         pageSizejLabel.setToolTipText("Page Size of the generated PDF document.");
         getContentPane().add(pageSizejLabel);
-        pageSizejLabel.setBounds(23, 70, 130, 17);
+        pageSizejLabel.setBounds(20, 50, 130, 17);
 
         pageSizejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pageSizejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A0", "A1", "A2", "A3", "A4", "A5", "A6", "Legal", "Letter" }));
         pageSizejComboBox.setSelectedIndex(8);
         getContentPane().add(pageSizejComboBox);
-        pageSizejComboBox.setBounds(170, 70, 88, 23);
+        pageSizejComboBox.setBounds(170, 50, 88, 23);
 
         dotsPerInchjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         dotsPerInchjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         dotsPerInchjLabel.setText("Dots Per Inch:");
         dotsPerInchjLabel.setToolTipText("Resolution of the page images.");
         getContentPane().add(dotsPerInchjLabel);
-        dotsPerInchjLabel.setBounds(40, 110, 110, 17);
+        dotsPerInchjLabel.setBounds(40, 90, 110, 17);
 
         dotsPerInchjComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         dotsPerInchjComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "300", "600", "1200", "2400" }));
         getContentPane().add(dotsPerInchjComboBox);
-        dotsPerInchjComboBox.setBounds(170, 110, 88, 23);
+        dotsPerInchjComboBox.setBounds(170, 90, 88, 23);
 
         imageTypejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         imageTypejLabel.setText("Image Type:");
         imageTypejLabel.setToolTipText("Image Type of captured page.");
         getContentPane().add(imageTypejLabel);
-        imageTypejLabel.setBounds(70, 150, 78, 17);
+        imageTypejLabel.setBounds(70, 130, 78, 17);
 
         imageTypejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         imageTypejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ARGB", "Binary", "Gray", "RGB" }));
         imageTypejComboBox.setSelectedIndex(2);
         getContentPane().add(imageTypejComboBox);
-        imageTypejComboBox.setBounds(170, 150, 88, 23);
+        imageTypejComboBox.setBounds(170, 130, 88, 23);
 
         outputPDFjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         outputPDFjLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         outputPDFjLabel.setText("Output File Name:");
         outputPDFjLabel.setToolTipText("Output file name, pdf extension will be added.");
         getContentPane().add(outputPDFjLabel);
-        outputPDFjLabel.setBounds(340, 80, 120, 17);
+        outputPDFjLabel.setBounds(340, 60, 120, 17);
 
         outputPDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         outputPDFjTextField.setText("booklet");
         getContentPane().add(outputPDFjTextField);
-        outputPDFjTextField.setBounds(470, 80, 156, 23);
+        outputPDFjTextField.setBounds(470, 60, 156, 23);
 
         generatejButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         generatejButton.setText("Generate");
@@ -265,13 +269,13 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(generatejButton);
-        generatejButton.setBounds(520, 190, 103, 31);
+        generatejButton.setBounds(520, 170, 103, 31);
 
         sectionSizejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sectionSizejLabel.setText("Section Size:");
         sectionSizejLabel.setToolTipText("Image Type of captured page.");
         getContentPane().add(sectionSizejLabel);
-        sectionSizejLabel.setBounds(70, 190, 78, 17);
+        sectionSizejLabel.setBounds(70, 170, 78, 17);
 
         sectionSizejComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sectionSizejComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 sheet", "2 sheets", "3 sheets", "4 sheets", "5 sheets", "6 sheets" }));
@@ -281,12 +285,21 @@ public class UserGui extends javax.swing.JFrame {
             }
         });
         getContentPane().add(sectionSizejComboBox);
-        sectionSizejComboBox.setBounds(170, 190, 88, 23);
+        sectionSizejComboBox.setBounds(170, 170, 88, 23);
 
         pagesjLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pagesjLabel.setText("(4 pages)");
         getContentPane().add(pagesjLabel);
-        pagesjLabel.setBounds(280, 190, 84, 17);
+        pagesjLabel.setBounds(280, 170, 84, 17);
+
+        generatejProgressBar.setOpaque(true);
+        generatejProgressBar.setStringPainted(true);
+        getContentPane().add(generatejProgressBar);
+        generatejProgressBar.setBounds(340, 120, 280, 20);
+
+        outputjLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        getContentPane().add(outputjLabel);
+        outputjLabel.setBounds(40, 210, 580, 10);
 
         backgroundjLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         backgroundjLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/phillockett65/background.jpg"))); // NOI18N
@@ -315,7 +328,38 @@ public class UserGui extends javax.swing.JFrame {
         booklet.setImageType(getIT());
         booklet.setSheetCount(getSheetCount());
 
-        booklet.genBooklet();
+        generatejButton.setEnabled(false);
+        outputjLabel.setText("");
+
+        // Use PDFBooklet.ProgressWorker to generate PDF in the background and
+        // update the progress bar as we go.
+        PDFBooklet.ProgressWorker pw = booklet.new ProgressWorker();
+        pw.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                String name = evt.getPropertyName();
+                if (name.equals("progress")) {
+                    int progress = (int) evt.getNewValue();
+                    generatejProgressBar.setValue(progress);
+                    repaint();
+                } else if (name.equals("state")) {
+                    SwingWorker.StateValue state = (SwingWorker.StateValue) evt.getNewValue();
+                    switch (state) {
+                        case DONE:
+                            generatejButton.setEnabled(true);
+
+                            outputjLabel.setText("File created in: " + outputPDF);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+        });
+        pw.execute();
+
     }//GEN-LAST:event_generatejButtonActionPerformed
 
     /**
@@ -414,10 +458,12 @@ public class UserGui extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> dotsPerInchjComboBox;
     private javax.swing.JLabel dotsPerInchjLabel;
     private javax.swing.JButton generatejButton;
+    private javax.swing.JProgressBar generatejProgressBar;
     private javax.swing.JComboBox<String> imageTypejComboBox;
     private javax.swing.JLabel imageTypejLabel;
     private javax.swing.JLabel outputPDFjLabel;
     private javax.swing.JTextField outputPDFjTextField;
+    private javax.swing.JLabel outputjLabel;
     private javax.swing.JComboBox<String> pageSizejComboBox;
     private javax.swing.JLabel pageSizejLabel;
     private javax.swing.JLabel pagesjLabel;
