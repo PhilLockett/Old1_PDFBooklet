@@ -61,7 +61,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EventObject;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -97,11 +96,9 @@ public class PDFBooklet {
     // Calculate the Aspect Ratio of half the page (view port).
     private float VPAR;                 // View Port Aspect Ratio.
 
-    private static boolean FLIP = true;         // Required?
+    private static final boolean FLIP = true;         // Required?
 
-    private static boolean TESTING = false;
-
-    private BookletCB callback = null;
+    private static final boolean TESTING = false;
 
     /**
      * Constructor.
@@ -147,10 +144,6 @@ public class PDFBooklet {
 
     public void setSheetCount(int count) {
         sheetCount = count;
-    }
-
-    public void setBookletCallback(BookletCB cb) {
-        callback = cb;
     }
 
     /**
@@ -210,12 +203,7 @@ public class PDFBooklet {
                     BufferedImage[] imageArray = pdfToImageArray(first, last);
                     addImagesToPdf(imageArray);
 
-                    if (callback == null) {
-                        System.out.printf("Pages %d to %d\n", first + 1, last);
-                    } else {
-                        BookletEvt event = new BookletEvt(this, MAX, last);
-                        callback.handler(event);
-                    }
+                    System.out.printf("Pages %d to %d\n", first + 1, last);
 
                     if (TESTING && first > 6) {
                         break;
@@ -388,39 +376,6 @@ public class PDFBooklet {
         g2d.drawImage(image, at, null);
 
         return rotated;
-    }
-
-    /**
-     * Lightweight callback interface.
-     */
-    public interface BookletCB {
-
-        void handler(BookletEvt e);
-    }
-
-    /**
-     * Booklet Event Object definition for callback interface.
-     */
-    public class BookletEvt extends EventObject {
-
-        private static final long serialVersionUID = 1L;
-
-        private final int MAX;
-        private final int pages;
-
-        public BookletEvt(Object source, int max, int page) {
-            super(source);
-            this.MAX = max;
-            this.pages = page;
-        }
-
-        public int getMax() {
-            return MAX;
-        }
-
-        public int getPages() {
-            return pages;
-        }
     }
 
 }
