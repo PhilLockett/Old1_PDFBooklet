@@ -200,9 +200,9 @@ public class PDFBooklet {
         ArrayList<BufferedImage> images = new ArrayList<>();
 
         PDFRenderer renderer = new PDFRenderer(inputDoc);
-        for (int page = first; page < last; ++page) {
+        for (int target = first; target < last; ++target) {
             try {
-                BufferedImage bim = renderer.renderImageWithDPI(page, DPI, IT);
+                BufferedImage bim = renderer.renderImageWithDPI(target, DPI, IT);
                 images.add(bim);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
