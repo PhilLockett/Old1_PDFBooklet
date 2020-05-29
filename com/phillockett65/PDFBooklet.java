@@ -147,44 +147,6 @@ public class PDFBooklet {
     }
 
     /**
-     * Add a new page to "outputDoc".
-     */
-    private void addNewPage() {
-        page = new PDPage(PS);
-        outputDoc.addPage(page);
-
-        final PDRectangle rectangle = page.getMediaBox();
-        width = rectangle.getWidth();
-        height = rectangle.getHeight();
-        hHeight = (height / 2);
-
-        // Calculate the Aspect Ratio of half the page (view port).
-        VPAR = width / hHeight; // View Port Aspect Ratio.
-    }
-
-    /**
-     * Start a new stream on the current page of "outputDoc".
-     */
-    private void startNewStream() {
-        try {
-            stream = new PDPageContentStream(outputDoc, page);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Close the current stream of "outputDoc".
-     */
-    private void endStream() {
-        try {
-            stream.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
      * Generate a booklet style PDF using a crude images of pages technique.
      */
     public void genBooklet() {
@@ -309,6 +271,44 @@ public class PDFBooklet {
             }
             endStream();
 
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Add a new page to "outputDoc".
+     */
+    private void addNewPage() {
+        page = new PDPage(PS);
+        outputDoc.addPage(page);
+
+        final PDRectangle rectangle = page.getMediaBox();
+        width = rectangle.getWidth();
+        height = rectangle.getHeight();
+        hHeight = (height / 2);
+
+        // Calculate the Aspect Ratio of half the page (view port).
+        VPAR = width / hHeight; // View Port Aspect Ratio.
+    }
+
+    /**
+     * Start a new stream on the current page of "outputDoc".
+     */
+    private void startNewStream() {
+        try {
+            stream = new PDPageContentStream(outputDoc, page);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Close the current stream of "outputDoc".
+     */
+    private void endStream() {
+        try {
+            stream.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
