@@ -62,6 +62,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.SwingWorker;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -144,6 +146,54 @@ public class PDFBooklet {
 
     public void setSheetCount(int count) {
         sheetCount = count;
+    }
+
+    /**
+     * Based on the SwingWorker example by "MadProgrammer" here:
+     * https://stackoverflow.com/questions/18835835/jprogressbar-not-updating
+     */
+    public class ProgressWorker extends SwingWorker<Object, Object> {
+
+        @Override
+        protected Object doInBackground() throws Exception {
+
+            try {
+                inputDoc = PDDocument.load(new File(sourcePDF));
+                final int MAX = inputDoc.getNumberOfPages();
+
+                try {
+                    outputDoc = new PDDocument();
+                    for (int first = 0; first < MAX; first += 4 * sheetCount) {
+                        int last = first + 4 * sheetCount;
+                        if (last > MAX) {
+                            last = MAX;
+                        }
+
+                        BufferedImage[] imageArray = pdfToImageArray(first, last);
+                        addImagesToPdf(imageArray);
+                        setProgress(100 * last / MAX);
+                        if (TESTING && first > 6) {
+                            break;
+                        }
+                    }
+                    outputDoc.save(outputPDF);
+                    if (outputDoc != null) {
+                        outputDoc.close();
+                    }
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+
+                if (inputDoc != null) {
+                    inputDoc.close();
+                }
+
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+            return null;
+        }
     }
 
     /**
