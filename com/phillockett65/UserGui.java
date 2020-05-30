@@ -191,7 +191,7 @@ public class UserGui extends javax.swing.JFrame {
         sourcePDFjLabel.setText("Source Document:");
         sourcePDFjLabel.setToolTipText("File path to the Source PDF Document.");
         getContentPane().add(sourcePDFjLabel);
-        sourcePDFjLabel.setBounds(30, 10, 130, 17);
+        sourcePDFjLabel.setBounds(20, 10, 130, 17);
 
         sourcePDFjTextField.setEditable(false);
         sourcePDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -252,12 +252,12 @@ public class UserGui extends javax.swing.JFrame {
         outputPDFjLabel.setText("Output File Name:");
         outputPDFjLabel.setToolTipText("Output file name, pdf extension will be added.");
         getContentPane().add(outputPDFjLabel);
-        outputPDFjLabel.setBounds(340, 60, 120, 17);
+        outputPDFjLabel.setBounds(340, 50, 120, 17);
 
         outputPDFjTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         outputPDFjTextField.setText("booklet");
         getContentPane().add(outputPDFjTextField);
-        outputPDFjTextField.setBounds(470, 60, 156, 23);
+        outputPDFjTextField.setBounds(470, 50, 156, 23);
 
         generatejButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         generatejButton.setText("Generate");
@@ -295,11 +295,11 @@ public class UserGui extends javax.swing.JFrame {
         generatejProgressBar.setOpaque(true);
         generatejProgressBar.setStringPainted(true);
         getContentPane().add(generatejProgressBar);
-        generatejProgressBar.setBounds(340, 120, 280, 20);
+        generatejProgressBar.setBounds(340, 130, 280, 20);
 
         outputjLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         getContentPane().add(outputjLabel);
-        outputjLabel.setBounds(40, 210, 580, 10);
+        outputjLabel.setBounds(70, 210, 550, 10);
 
         backgroundjLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         backgroundjLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/phillockett65/background.jpg"))); // NOI18N
