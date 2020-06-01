@@ -9,7 +9,7 @@ PDF document. It requires 2 command line parameters, the source PDF and the
 name of the new PDF. Example usage:
   java -jar path-to-PDFBooklet.jar path-to-source.pdf path-to-new.pdf
 
-The PDFBooklet.jar must contain pdfbox-app-2.x.x.jar.
+The executable PDFBooklet.jar must contain pdfbox-app-2.x.x.jar.
 
 PDFBooklet can also be used as an external java class, in which case 
 PDFBooklet.main() should be superseded. UserGui.java is an example that 
@@ -17,11 +17,9 @@ instantiates the class, sets the user selected attributes and then executes
 the generator in the background using a SwingWorker.
 
 This code supports multi-sheet sections. For more information, see:
-  https://en.wikipedia.org/wiki/Bookbinding#Terms_and_techniques
-  https://www.formaxprinting.com/blog/2016/11/
-      booklet-layout-how-to-arrange-the-pages-of-a-saddle-stitched-booklet/
-  https://www.studentbookbinding.co.uk/blog/
-      how-to-set-up-pagination-section-sewn-bindings
+ * [Terms](https://en.wikipedia.org/wiki/Bookbinding#Terms_and_techniques)
+ * [Layout](https://www.formaxprinting.com/blog/2016/11/booklet-layout-how-to-arrange-the-pages-of-a-saddle-stitched-booklet/)
+ * [Bindings](https://www.studentbookbinding.co.uk/blog/how-to-set-up-pagination-section-sewn-bindings)
 
 The implementation is crude in that the source pages are captured as images
 which are then rotated, scaled and arranged on the pages. As a result, the
