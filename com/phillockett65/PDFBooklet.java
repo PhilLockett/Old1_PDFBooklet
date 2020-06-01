@@ -100,8 +100,6 @@ public class PDFBooklet {
 
     private static final boolean FLIP = true;         // Required?
 
-    private static final boolean TESTING = false;
-
     /**
      * Constructor.
      *
@@ -172,9 +170,6 @@ public class PDFBooklet {
                         BufferedImage[] imageArray = pdfToImageArray(first, last);
                         addImagesToPdf(imageArray);
                         setProgress(100 * last / MAX);
-                        if (TESTING && first > 6) {
-                            break;
-                        }
                     }
                     outputDoc.save(outputPDF);
                     if (outputDoc != null) {
@@ -216,10 +211,6 @@ public class PDFBooklet {
                     addImagesToPdf(imageArray);
 
                     System.out.printf("Pages %d to %d\n", first + 1, last);
-
-                    if (TESTING && first > 6) {
-                        break;
-                    }
                 }
                 outputDoc.save(outputPDF);
                 if (outputDoc != null) {
