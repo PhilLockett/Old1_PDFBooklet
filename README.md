@@ -47,13 +47,15 @@ fit on the top half of the same side of the sheet. On the reverse side, the
 page is rotated clockwise and scaled to fit on the bottom half. This process 
 is repeated for all groups of 4 pages in the source document.
 
-For a "Selection Size" of more then 1 sheet, more pages are grouped in 
-multiples of 4 and arranged in a similar, but more complex manor.
+For a "Selection Size" of more than 1 sheet, more pages are grouped in 
+multiples of 4 and arranged in a similar, but more complex manner.
 
 ## Cloning and Running
 
-Cloning is a bit awkward because IDE is required to create the java 
-environment  
+Cloning is a bit awkward because an IDE is required to create the java build 
+environment first. Then the code needs to be cloned and moved to the correct 
+location in the java build environment before the code can be built.
+
 To clone, build and run this code, use the following steps:
 
   1. Use NetBeans (or your favourite IDE) to build a project called PDFBooklet
@@ -68,8 +70,8 @@ To clone, build and run this code, use the following steps:
 This code has the following points of interest:
 
   * PDFBooklet.java was developed as stand alone code.
-  * A user GUI was developed using NetBeans to amke using PDFBooklet easier.
-  * TheUserGui,form file, create by NetBeans is supplied.
-  * The code privides functions for rotating a BufferedImage +/- 90 degrees.
+  * A user GUI was developed using NetBeans to make using PDFBooklet easier.
+  * The UserGui.form file, create by NetBeans is supplied.
+  * The code provides functions for rotating a BufferedImage +/- 90 degrees.
   * The PDF processing can be performed in the background using a SwingWorker.
-  * Using a SwingWorker enables a JProgressBar to be supported.
+  * Using a SwingWorker enables a JProgressBar to be supported by the GUI.
