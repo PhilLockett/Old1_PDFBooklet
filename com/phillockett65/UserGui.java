@@ -261,7 +261,7 @@ public class UserGui extends javax.swing.JFrame {
 
         generatejButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         generatejButton.setText("Generate");
-        generatejButton.setToolTipText("Select the Source Document first.");
+        generatejButton.setToolTipText("Select the Source PDF Document first.");
         generatejButton.setEnabled(false);
         generatejButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,7 +273,7 @@ public class UserGui extends javax.swing.JFrame {
 
         sectionSizejLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         sectionSizejLabel.setText("Section Size:");
-        sectionSizejLabel.setToolTipText("Image Type of captured page.");
+        sectionSizejLabel.setToolTipText("Number of sheets of paper per section.");
         getContentPane().add(sectionSizejLabel);
         sectionSizejLabel.setBounds(70, 170, 78, 17);
 
