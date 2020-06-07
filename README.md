@@ -49,3 +49,27 @@ is repeated for all groups of 4 pages in the source document.
 
 For a "Selection Size" of more then 1 sheet, more pages are grouped in 
 multiples of 4 and arranged in a similar, but more complex manor.
+
+## Cloning and Running
+
+Cloning is a bit awkward because IDE is required to create the java 
+environment  
+To clone, build and run this code, use the following steps:
+
+  1. Use NetBeans (or your favourite IDE) to build a project called PDFBooklet
+  2. cd to the newly created src/ directory
+  3. git clone https://github.com/PhilLockett/PDFBooklet.git
+  4. Move the contents of PDFBooklet/ (.git, com, README.md) up into src/
+  5. Delete the now empty PDFBooklet/ directory
+  4. Refresh the IDE with the new content and run the code
+
+## Points of interest
+
+This code has the following points of interest:
+
+  * PDFBooklet.java was developed as stand alone code.
+  * A user GUI was developed using NetBeans to amke using PDFBooklet easier.
+  * TheUserGui,form file, create by NetBeans is supplied.
+  * The code privides functions for rotating a BufferedImage +/- 90 degrees.
+  * The PDF processing can be performed in the background using a SwingWorker.
+  * Using a SwingWorker enables a JProgressBar to be supported.
